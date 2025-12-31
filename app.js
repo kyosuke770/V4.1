@@ -135,57 +135,52 @@ function resetCardView() {
 /*************************************************
  * CSV Auto Loader (manifest不要)
  *************************************************/
-
-function pad2(n){ return String(n).padStart(2, "0"); }
-function pad3(n){ return String(n).padStart(3, "0"); }
-
 async function loadAllCSVs() {
   cards = [];
 
-  const MAX_VIDEO = 20;  // 適当でOK
-  const MAX_BLOCK = 50;  // 1動画あたり最大ブロック数（30問単位）
+  // ✅ いま存在してるCSVだけを列挙（manifest不要）
+  const FILES = [
+    "./data/video01_001-030.csv",
+    "./data/video01_031-060.csv"
+  ];
 
-  for (let v = 1; v <= MAX_VIDEO; v++) {
-    for (let b = 0; b < MAX_BLOCK; b++) {
-      const start = b * 30 + 1;
-      const end = start + 29;
+  // iPhoneで状況が見えないので、画面に出す
+  jpEl.textContent = "CSV読み込み中…";
+  enEl.textContent = "";
 
-      // ✅ あなたの命名規則に合わせる：video01_001-030.csv
-      const file = `./data/video${pad2(v)}_${pad3(start)}-${pad3(end)}.csv`;
-
-      try {
-        const res = await fetch(file, { cache: "no-store" });
-        if (!res.ok) continue;
-
-        const text = await res.text();
-        if (text.trim().startsWith("<!DOCTYPE") || text.includes("<html")) continue;
-
-        const parsed = parseCSV(text);
-        if (parsed.length) {
-          cards.push(...parsed);
-          console.log("Loaded:", file, parsed.length);
-        }
-      } catch (e) {
-        // 404想定：無視
+  for (const file of FILES) {
+    try {
+      const res = await fetch(file, { cache: "no-store" });
+      if (!res.ok) {
+        alert(`読めない: ${file} (HTTP ${res.status})`);
+        continue;
       }
+      const text = await res.text();
+      if (text.trim().startsWith("<!DOCTYPE") || text.includes("<html")) {
+        alert(`HTMLを読んでる: ${file}`);
+        continue;
+      }
+      const parsed = parseCSV(text);
+      cards.push(...parsed);
+    } catch (e) {
+      alert(`fetch失敗: ${file}\n${e.message}`);
     }
   }
 
   if (!cards.length) {
-    alert("csvが1件も読み込めませんでした（ファイル名/場所/ヘッダを確認）");
+    alert("csvが1件も読み込めませんでした（FILESのパス/CSV内容を確認）");
     return;
   }
 
-  // 念のため no で整列
   cards.sort((a, b) => a.no - b.no);
 
-  // 初期モード
   cardsByMode = getCardsByBlock(prefs.block || 1);
   index = 0;
   resetCardView();
 
   showHome();
 }
+
 
 function parseCSV(text) {
   const lines = text.trim().split("\n");
