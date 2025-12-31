@@ -1,0 +1,31 @@
+no,jp,en,slots,video,lv,note,scene
+31,どうしたんですか？,What happened?,,1,1,,daily
+32,さっきはごめんなさい。,Sorry about earlier.,,1,1,,relationship
+33,来られますか（都合つきますか）？,Can you make it?,,1,2,イベントや約束に参加できるか聞く時。,daily
+34,何か提案はありますか？,What do you suggest?,,1,2,相手の意見やアドバイスを求める時。,work
+35,時間を取ってもらえて感謝です。,I appreciate your time.,,1,2,忙しい相手が対応してくれた時の感謝。,work
+36,そうだと{x}。,I {x} so.,思います=suppose|推測します=guess,1,2,確信はないが同意・肯定する時。,daily
+37,できる限りやってみます。,I'll see what I can do.,,1,2,確約はできないが努力する意思を伝える時。,work
+38,全て順調です。,Everything is going well.,,1,1,,daily
+39,こちらこそ。,My pleasure.,,1,1,感謝された時の丁寧な返し。,service
+40,大したことじゃないですよ。,It's nothing.,,1,1,お礼を言われた時や、謝られた時に。,daily
+41,お待ちいただきありがとう。,Thanks for waiting.,,1,1,待たせた相手への第一声。,service
+42,また{x}しますね。,I'll {x} you know.,知らせ=let,1,2,進捗や結果を後で伝える時。,work
+43,ご遠慮なく{x}ください。,Feel free to {x}.,聞いて=ask|参加して=join,1,2,相手に許可や推奨を与える時。,work
+44,自分がいいと思うようにして。,Do what feels right.,,1,2,相手の直感や判断を尊重する時。,relationship
+45,詳しく教えてもらえますか？,Could you elaborate?,,1,2,詳細な説明を求める丁寧な表現。,work
+46,ご理解ありがとうございます。,Thanks for understanding.,,1,1,無理をお願いした後や謝罪の後に。,service
+47,楽しんでください。,Enjoy yourself.,,1,1,出かける相手やイベントに参加する人へ。,daily
+48,念のため確認します。,I'll double check.,,1,2,ミスがないか再確認する時。,work
+49,ちょっと違いますね。,That's not quite right.,,1,2,ソフトに否定や訂正をする時。,work
+50,{x}でしょう。,You must be {x}.,お疲れ=tired|お腹が空いた=hungry,1,2,状況から相手の状態を察する時。,daily
+51,確認してみますね。,Let me check.,,1,1,在庫や事実を確認するために席を外す時など。,service
+52,まだはっきりしません。,It's not clear yet.,,1,2,状況が不確定な時。,work
+53,説明するのは難しいです。,It's hard to explain.,,1,2,一言では言い表せない時。,daily
+54,気にしないでください。,No worries.,,1,1,謝罪やお礼に対する軽い返答。,daily
+55,一つ{x}いいですか？,Can I {x} something?,聞いて=ask|言って=say,1,2,本題に入る前のクッション言葉。,daily
+56,私がやりますよ。,I'll handle it.,,1,2,問題解決やタスクを自分が引き受ける時。,work
+57,結果はどうでした？,How did it turn out?,,1,2,事の成り行きや結末を尋ねる時。,daily
+58,いつでもどうぞ。,Anytime.,,1,1,お礼を言われた時の「どういたしまして」。,daily
+59,少し{x}ありますか？,Do you have {x}?,時間=a minute|質問=any questions,1,2,話しかける時の前置き。,work
+60,様子を見ましょう。,Let's see how it goes.,,1,2,一旦判断を保留して経過観察する時。,work
