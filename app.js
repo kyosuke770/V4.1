@@ -527,4 +527,4 @@ cardEl.addEventListener("click", () => {
 /*************************************************
  * Init
  *************************************************/
-loadAllCSVs(alert("cards=" + cards.length););
+loadAllCSVs(alert();
