@@ -135,45 +135,72 @@ function resetCardView() {
 /*************************************************
  * CSV Auto Loader (manifest不要)
  *************************************************/
+async function fetchCSV(file) {
+  try {
+    const res = await fetch(file, { cache: "no-store" });
+    if (!res.ok) return null;
+    const text = await res.text();
+    if (text.trim().startsWith("<!DOCTYPE") || text.includes("<html")) return null;
+    return text;
+  } catch (e) {
+    return null;
+  }
+}
+
 async function loadAllCSVs() {
   cards = [];
 
-  // ✅ いま存在してるCSVだけを列挙（manifest不要）
-  const FILES = [
-    "./data/video01_001-030.csv",
-    "./data/video01_031-060.csv"
-  ];
+  const MAX_VIDEO = 50;          // 余裕でOK
+  const MAX_BLOCK = 50;          // 1動画あたり最大ブロック数
+  const MISS_LIMIT_VIDEO = 3;    // 連続で動画が見つからない回数 → 打ち切り
+  const MISS_LIMIT_BLOCK = 2;    // 連続でブロックが見つからない回数 → その動画打ち切り
 
-  // iPhoneで状況が見えないので、画面に出す
   jpEl.textContent = "CSV読み込み中…";
   enEl.textContent = "";
 
-  for (const file of FILES) {
-    try {
-      const res = await fetch(file, { cache: "no-store" });
-      if (!res.ok) {
-        alert(`読めない: ${file} (HTTP ${res.status})`);
+  let missVideo = 0;
+
+  for (let v = 1; v <= MAX_VIDEO; v++) {
+    let missBlock = 0;
+    let loadedAnyInThisVideo = false;
+
+    for (let b = 0; b < MAX_BLOCK; b++) {
+      const start = b * 30 + 1;
+      const end = start + 29;
+
+      const file = `./data/video${pad2(v)}_${pad3(start)}-${pad3(end)}.csv`;
+      const text = await fetchCSV(file);
+
+      if (!text) {
+        missBlock++;
+        if (missBlock >= MISS_LIMIT_BLOCK) break; // ✅ 無限探索しない
         continue;
       }
-      const text = await res.text();
-      if (text.trim().startsWith("<!DOCTYPE") || text.includes("<html")) {
-        alert(`HTMLを読んでる: ${file}`);
-        continue;
-      }
+
+      missBlock = 0;
+      loadedAnyInThisVideo = true;
+
       const parsed = parseCSV(text);
-      cards.push(...parsed);
-    } catch (e) {
-      alert(`fetch失敗: ${file}\n${e.message}`);
+      if (parsed.length) {
+        cards.push(...parsed);
+      }
+    }
+
+    if (!loadedAnyInThisVideo) {
+      missVideo++;
+      if (missVideo >= MISS_LIMIT_VIDEO) break; // ✅ 例えば video01しか無ければここで止まる
+    } else {
+      missVideo = 0;
     }
   }
 
   if (!cards.length) {
-    alert("csvが1件も読み込めませんでした（FILESのパス/CSV内容を確認）");
+    alert("csvが1件も読み込めませんでした（ファイル名/場所/ヘッダを確認）");
     return;
   }
 
+  // 整列＆初期化
   cards.sort((a, b) => a.no - b.no);
-
   cardsByMode = getCardsByBlock(prefs.block || 1);
   index = 0;
   resetCardView();
