@@ -136,46 +136,50 @@ function resetCardView() {
  * CSV Auto Loader (manifest不要)
  *************************************************/
 
+function pad2(n){ return String(n).padStart(2, "0"); }
+function pad3(n){ return String(n).padStart(3, "0"); }
+
 async function loadAllCSVs() {
   cards = [];
 
-  const MAX_VIDEO = 20;   // 想定最大動画数（適当に大きめでOK）
-  const MAX_BLOCK = 20;   // 1動画あたりの最大ブロック数
+  const MAX_VIDEO = 20;  // 適当でOK
+  const MAX_BLOCK = 50;  // 1動画あたり最大ブロック数（30問単位）
 
   for (let v = 1; v <= MAX_VIDEO; v++) {
     for (let b = 0; b < MAX_BLOCK; b++) {
       const start = b * 30 + 1;
       const end = start + 29;
-      const file = `data/video${String(v).padStart(2, "0")}_${start}-${end}.csv`;
+
+      // ✅ あなたの命名規則に合わせる：video01_001-030.csv
+      const file = `./data/video${pad2(v)}_${pad3(start)}-${pad3(end)}.csv`;
 
       try {
         const res = await fetch(file, { cache: "no-store" });
-        if (!res.ok) continue; // ← 無かったら無視
+        if (!res.ok) continue;
 
         const text = await res.text();
-
-        // HTML誤読防止
-        if (text.startsWith("<!DOCTYPE")) continue;
+        if (text.trim().startsWith("<!DOCTYPE") || text.includes("<html")) continue;
 
         const parsed = parseCSV(text);
-        cards.push(...parsed);
-
-        console.log(`Loaded: ${file}`);
+        if (parsed.length) {
+          cards.push(...parsed);
+          console.log("Loaded:", file, parsed.length);
+        }
       } catch (e) {
-        // 何もしない（404想定）
+        // 404想定：無視
       }
     }
   }
 
   if (!cards.length) {
-    alert("CSVが1件も読み込めませんでした");
+    alert("csvが1件も読み込めませんでした（ファイル名/場所/ヘッダを確認）");
     return;
   }
 
-  // 並び順を保証
+  // 念のため no で整列
   cards.sort((a, b) => a.no - b.no);
 
-  // 初期状態
+  // 初期モード
   cardsByMode = getCardsByBlock(prefs.block || 1);
   index = 0;
   resetCardView();
